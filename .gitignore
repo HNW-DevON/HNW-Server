@@ -2,3 +2,5 @@ node_modules
 .env
 .DS_Store
 yarn-error.log
+images
+package-lock.json
