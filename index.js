@@ -1,3 +1,4 @@
+// 환경 변수 불러오기
 require("dotenv").config();
 const { MYSQL_HOST, MYSQL_USER, MYSQL_PWD, MYSQL_PORT, EXPRESS_PORT } =
   process.env;
@@ -10,6 +11,9 @@ const connection = mysql.createConnection({
   password: process.env.MYSQL_PWD,
   database: "HNW-User",
 });
+
+const multer = require("multer");
+const upload = multer({ dest: "images/" });
 
 const express = require("express");
 const favicon = require("serve-favicon");
@@ -27,7 +31,6 @@ app.post("/login", (req, res) => {
   console.log(`Trying to login -> ${email} : ${password}`);
 
   connection.query(sql, [email, password], (err, rows, fields) => {
-    console.log(rows);
     if (rows.length < 1) {
       res.status(404).send("존재하지 않는 사용자입니다");
     } else {
@@ -51,6 +54,11 @@ app.post("/join", (req, res) => {
       res.send("감사합니다");
     }
   });
+});
+
+app.post("/search", upload.single("image"), (req, res) => {
+  res.send("Uploaded image !");
+  console.log(req.file);
 });
 
 app.listen(process.env.EXPRESS_PORT, () => {
