@@ -31,13 +31,11 @@ const fs = require("fs");
 // 웹 서버 이니셜라이징
 const express = require("express");
 const favicon = require("serve-favicon");
-const { runInNewContext } = require("vm");
 const app = express();
 
 // 웹 서버 러닝
 app.use(express.json());
 app.use(cors());
-
 app.use(express.urlencoded({ extended: true }));
 app.use(favicon(__dirname + "/favicon.ico"));
 
@@ -112,17 +110,16 @@ app.get("/comp/s/:service", (req, res) => {
   console.log(req.params.service);
 
   connection.query(
-    `SELECT * FROM compInfo WHERE service = ${req.params.service}`,
+    `SELECT * FROM compInfo WHERE service = "${req.params.service}"`,
     (err, rows, fields) => {
       if (err) {
         console.log(err);
       }
-      res.json(rows[0]);
+      res.json(rows);
     }
   );
 });
 
-// 회사 이름으로 필터링
 app.get("/comp/:name", (req, res) => {
   console.log("Comp Catalog Request.");
 
@@ -134,7 +131,6 @@ app.get("/comp/:name", (req, res) => {
       if (err) {
         console.log(err);
       }
-      console.log(rows);
       res.json(rows[0]);
     }
   );
